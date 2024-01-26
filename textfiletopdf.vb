@@ -2,31 +2,31 @@
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 
 Public Class textfiletopdf
-    Private Sub withdrawBtn_Click(sender As Object, e As EventArgs) Handles withdrawBtn.Click
+    Private Sub BtnWithdraw_Click(sender As Object, e As EventArgs) Handles BtnWithdraw.Click
         ATM.SelectTab(ATM.TabPages("WITHDRAW").TabIndex)
     End Sub
 
-    Private Sub depositBtn_Click(sender As Object, e As EventArgs) Handles depositBtn.Click
+    Private Sub BtnDeposit_Click(sender As Object, e As EventArgs) Handles BtnDeposit.Click
         ATM.SelectTab(ATM.TabPages("DEPOSIT").TabIndex)
     End Sub
 
-    Private Sub balanceBtn_Click(sender As Object, e As EventArgs) Handles balanceBtn.Click
+    Private Sub BtnBalance_Click(sender As Object, e As EventArgs) Handles BtnBalance.Click
         ATM.SelectTab(ATM.TabPages("BALANCE").TabIndex)
     End Sub
 
-    Private Sub transferBtn_Click(sender As Object, e As EventArgs) Handles transferBtn.Click
+    Private Sub BtnTransfer_Click(sender As Object, e As EventArgs) Handles BtnTransfer.Click
         ATM.SelectTab(ATM.TabPages("TRANSFER").TabIndex)
     End Sub
 
-    Private Sub changepinBtn_Click(sender As Object, e As EventArgs) Handles changepinBtn.Click
+    Private Sub BtnChangePIN_Click(sender As Object, e As EventArgs) Handles BtnChangePIN.Click
         ATM.SelectTab(ATM.TabPages("CHANGEPIN").TabIndex)
     End Sub
 
-    Private Sub accountBtn_Click(sender As Object, e As EventArgs) Handles accountBtn.Click
+    Private Sub BtnAccount_Click(sender As Object, e As EventArgs) Handles BtnAccount.Click
         ATM.SelectTab(ATM.TabPages("ACCOUNT").TabIndex)
     End Sub
 
-    Private Sub Label1_Click(sender As Object, e As EventArgs) Handles Label1.Click
+    Private Sub LblLogout_Click(sender As Object, e As EventArgs) Handles LblLogout.Click
         Dim summaryMessage As String = "Transaction Summary:"
         Dim withdrawAmount As Decimal = 0
         Dim depositAmount As Decimal = 0
@@ -57,7 +57,7 @@ Public Class textfiletopdf
     End Sub
 
     Private accountBalance As Decimal = 1000
-    Private Sub BtnDeposit_Click(sender As Object, e As EventArgs) Handles BtnDeposit.Click
+    Private Sub BtnDeposit_Click(sender As Object, e As EventArgs)
         Dim depositAmount As Decimal
         If Decimal.TryParse(TxtDeposit.Text, depositAmount) AndAlso depositAmount > 0 Then
             accountBalance += depositAmount
@@ -94,7 +94,7 @@ Public Class textfiletopdf
         Return True
     End Function
 
-    Private Sub WithdrawalAmountButtonClick(sender As Object, e As EventArgs) Handles BtnWithdraw50.Click, BtnWithdraw100.Click, BtnWithdraw500.Click, BtnWithdraw1000.Click
+    Private Sub WithdrawalAmountButtonClick(sender As Object, e As EventArgs)
         Dim clickedButton As System.Windows.Forms.Button = CType(sender, System.Windows.Forms.Button)
         Dim amount As Decimal = 0
         If clickedButton Is BtnWithdraw50 Then
@@ -108,5 +108,4 @@ Public Class textfiletopdf
         End If
         TxtWithdraw.Text = amount.ToString("N2")
     End Sub
-
 End Class
