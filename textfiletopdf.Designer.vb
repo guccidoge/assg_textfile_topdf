@@ -24,12 +24,14 @@ Partial Class textfiletopdf
     Private Sub InitializeComponent()
         Me.ATM = New System.Windows.Forms.TabControl()
         Me.MAINMENU = New System.Windows.Forms.TabPage()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.LblLogout = New System.Windows.Forms.Label()
         Me.BtnAccount = New System.Windows.Forms.Button()
         Me.BtnChangePIN = New System.Windows.Forms.Button()
         Me.BtnTransfer = New System.Windows.Forms.Button()
         Me.BtnBalance = New System.Windows.Forms.Button()
-        Me.BtnDeposit = New System.Windows.Forms.Button()
+        Me.BtnDepositX = New System.Windows.Forms.Button()
         Me.BtnWithdraw = New System.Windows.Forms.Button()
         Me.WITHDRAW = New System.Windows.Forms.TabPage()
         Me.GrpWithdrawKeypad = New System.Windows.Forms.GroupBox()
@@ -101,6 +103,8 @@ Partial Class textfiletopdf
         Me.Label4 = New System.Windows.Forms.Label()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.ACCOUNT = New System.Windows.Forms.TabPage()
+        Me.TxtAccountNumber = New System.Windows.Forms.TextBox()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.ATM.SuspendLayout()
         Me.MAINMENU.SuspendLayout()
         Me.WITHDRAW.SuspendLayout()
@@ -129,12 +133,14 @@ Partial Class textfiletopdf
         '
         'MAINMENU
         '
+        Me.MAINMENU.Controls.Add(Me.Label2)
+        Me.MAINMENU.Controls.Add(Me.Label1)
         Me.MAINMENU.Controls.Add(Me.LblLogout)
         Me.MAINMENU.Controls.Add(Me.BtnAccount)
         Me.MAINMENU.Controls.Add(Me.BtnChangePIN)
         Me.MAINMENU.Controls.Add(Me.BtnTransfer)
         Me.MAINMENU.Controls.Add(Me.BtnBalance)
-        Me.MAINMENU.Controls.Add(Me.BtnDeposit)
+        Me.MAINMENU.Controls.Add(Me.BtnDepositX)
         Me.MAINMENU.Controls.Add(Me.BtnWithdraw)
         Me.MAINMENU.Location = New System.Drawing.Point(4, 25)
         Me.MAINMENU.Name = "MAINMENU"
@@ -143,6 +149,25 @@ Partial Class textfiletopdf
         Me.MAINMENU.TabIndex = 0
         Me.MAINMENU.Text = "MAIN MENU"
         Me.MAINMENU.UseVisualStyleBackColor = True
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(224, 50)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(48, 16)
+        Me.Label2.TabIndex = 8
+        Me.Label2.Text = "Label2"
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label1.Location = New System.Drawing.Point(82, 43)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(136, 25)
+        Me.Label1.TabIndex = 7
+        Me.Label1.Text = "WELCOME, "
         '
         'LblLogout
         '
@@ -156,7 +181,7 @@ Partial Class textfiletopdf
         '
         'BtnAccount
         '
-        Me.BtnAccount.Location = New System.Drawing.Point(450, 194)
+        Me.BtnAccount.Location = New System.Drawing.Point(473, 244)
         Me.BtnAccount.Name = "BtnAccount"
         Me.BtnAccount.Size = New System.Drawing.Size(158, 93)
         Me.BtnAccount.TabIndex = 5
@@ -165,7 +190,7 @@ Partial Class textfiletopdf
         '
         'BtnChangePIN
         '
-        Me.BtnChangePIN.Location = New System.Drawing.Point(259, 194)
+        Me.BtnChangePIN.Location = New System.Drawing.Point(282, 244)
         Me.BtnChangePIN.Name = "BtnChangePIN"
         Me.BtnChangePIN.Size = New System.Drawing.Size(158, 93)
         Me.BtnChangePIN.TabIndex = 4
@@ -174,7 +199,7 @@ Partial Class textfiletopdf
         '
         'BtnTransfer
         '
-        Me.BtnTransfer.Location = New System.Drawing.Point(64, 194)
+        Me.BtnTransfer.Location = New System.Drawing.Point(87, 244)
         Me.BtnTransfer.Name = "BtnTransfer"
         Me.BtnTransfer.Size = New System.Drawing.Size(158, 93)
         Me.BtnTransfer.TabIndex = 3
@@ -183,25 +208,25 @@ Partial Class textfiletopdf
         '
         'BtnBalance
         '
-        Me.BtnBalance.Location = New System.Drawing.Point(450, 63)
+        Me.BtnBalance.Location = New System.Drawing.Point(473, 113)
         Me.BtnBalance.Name = "BtnBalance"
         Me.BtnBalance.Size = New System.Drawing.Size(158, 93)
         Me.BtnBalance.TabIndex = 2
         Me.BtnBalance.Text = "BALANCE"
         Me.BtnBalance.UseVisualStyleBackColor = True
         '
-        'BtnDeposit
+        'BtnDepositX
         '
-        Me.BtnDeposit.Location = New System.Drawing.Point(259, 63)
-        Me.BtnDeposit.Name = "BtnDeposit"
-        Me.BtnDeposit.Size = New System.Drawing.Size(158, 93)
-        Me.BtnDeposit.TabIndex = 1
-        Me.BtnDeposit.Text = "DEPOSIT"
-        Me.BtnDeposit.UseVisualStyleBackColor = True
+        Me.BtnDepositX.Location = New System.Drawing.Point(282, 113)
+        Me.BtnDepositX.Name = "BtnDepositX"
+        Me.BtnDepositX.Size = New System.Drawing.Size(158, 93)
+        Me.BtnDepositX.TabIndex = 1
+        Me.BtnDepositX.Text = "DEPOSIT"
+        Me.BtnDepositX.UseVisualStyleBackColor = True
         '
         'BtnWithdraw
         '
-        Me.BtnWithdraw.Location = New System.Drawing.Point(64, 63)
+        Me.BtnWithdraw.Location = New System.Drawing.Point(87, 113)
         Me.BtnWithdraw.Name = "BtnWithdraw"
         Me.BtnWithdraw.Size = New System.Drawing.Size(158, 93)
         Me.BtnWithdraw.TabIndex = 0
@@ -688,6 +713,8 @@ Partial Class textfiletopdf
         '
         'TRANSFER
         '
+        Me.TRANSFER.Controls.Add(Me.Label5)
+        Me.TRANSFER.Controls.Add(Me.TxtAccountNumber)
         Me.TRANSFER.Controls.Add(Me.GrpTransferKeypad)
         Me.TRANSFER.Controls.Add(Me.LblTransferRM)
         Me.TRANSFER.Controls.Add(Me.TxtTransfer)
@@ -903,7 +930,7 @@ Partial Class textfiletopdf
         '
         Me.LblTransferRM.AutoSize = True
         Me.LblTransferRM.Font = New System.Drawing.Font("Microsoft YaHei UI", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.LblTransferRM.Location = New System.Drawing.Point(201, 28)
+        Me.LblTransferRM.Location = New System.Drawing.Point(381, 27)
         Me.LblTransferRM.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.LblTransferRM.Name = "LblTransferRM"
         Me.LblTransferRM.Size = New System.Drawing.Size(53, 31)
@@ -913,7 +940,7 @@ Partial Class textfiletopdf
         'TxtTransfer
         '
         Me.TxtTransfer.Font = New System.Drawing.Font("Leelawadee UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtTransfer.Location = New System.Drawing.Point(262, 27)
+        Me.TxtTransfer.Location = New System.Drawing.Point(442, 26)
         Me.TxtTransfer.Margin = New System.Windows.Forms.Padding(4)
         Me.TxtTransfer.Multiline = True
         Me.TxtTransfer.Name = "TxtTransfer"
@@ -1014,6 +1041,27 @@ Partial Class textfiletopdf
         Me.ACCOUNT.Text = "ACCOUNT"
         Me.ACCOUNT.UseVisualStyleBackColor = True
         '
+        'TxtAccountNumber
+        '
+        Me.TxtAccountNumber.Font = New System.Drawing.Font("Leelawadee UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtAccountNumber.Location = New System.Drawing.Point(107, 27)
+        Me.TxtAccountNumber.Margin = New System.Windows.Forms.Padding(4)
+        Me.TxtAccountNumber.Multiline = True
+        Me.TxtAccountNumber.Name = "TxtAccountNumber"
+        Me.TxtAccountNumber.Size = New System.Drawing.Size(252, 32)
+        Me.TxtAccountNumber.TabIndex = 29
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Microsoft YaHei UI", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.Location = New System.Drawing.Point(51, 28)
+        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(48, 31)
+        Me.Label5.TabIndex = 30
+        Me.Label5.Text = "TO"
+        '
         'textfiletopdf
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -1047,7 +1095,7 @@ Partial Class textfiletopdf
     Friend WithEvents TRANSFER As TabPage
     Friend WithEvents MAINMENU As TabPage
     Friend WithEvents BtnBalance As Button
-    Friend WithEvents BtnDeposit As Button
+    Friend WithEvents BtnDepositX As Button
     Friend WithEvents BtnWithdraw As Button
     Friend WithEvents BtnAccount As Button
     Friend WithEvents BtnChangePIN As Button
@@ -1119,4 +1167,8 @@ Partial Class textfiletopdf
     Friend WithEvents BtnTransfer1 As Button
     Friend WithEvents LblTransferRM As Label
     Friend WithEvents TxtTransfer As TextBox
+    Friend WithEvents Label1 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents TxtAccountNumber As TextBox
 End Class
