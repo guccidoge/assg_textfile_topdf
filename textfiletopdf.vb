@@ -47,7 +47,7 @@ Public Class textfiletopdf
 
     Private Function ValidateAccountNumber(accountNumber As String) As Boolean
         ' Read all lines from the userData text file
-        Dim userDataFilePath As String = "C:\Users\eilli\Downloads\userData.txt"
+        Dim userDataFilePath As String = "C:\Users\eilli\source\repos\TEXTFILE\userData1.txt"
         Dim userDataLines() As String = File.ReadAllLines(userDataFilePath)
 
         ' Iterate through each line in the file to check if the account number exists
@@ -118,13 +118,16 @@ Public Class textfiletopdf
 
     ' Event Handler for Accept Button
     Private Sub BtnAccept_Click(sender As Object, e As EventArgs) Handles BtnWithdrawAccept.Click, BtnDepositAccept.Click, BtnTransferAccept.Click
+        ' Determine the active tab name
         Dim activeTabName As String = ATM.SelectedTab.Name
 
+        ' Based on the active tab, parse the amount from the respective text box
         Select Case activeTabName
             Case "WITHDRAW"
-                Dim withdrawalAmount As Decimal
-                If Decimal.TryParse(TxtWithdraw.Text, withdrawalAmount) Then
-                    If UpdateBankBalance(Username, "withdraw", withdrawalAmount) Then
+                Dim amount As Decimal
+                If Decimal.TryParse(TxtWithdraw.Text, amount) Then
+                    ' Call UpdateBankBalance for withdrawal
+                    If UpdateBankBalance(Username, "withdraw", amount) Then
                         MsgBox("Withdrawal Successful")
                         TxtWithdraw.Text = "0.00"
                         ATM.SelectTab(ATM.TabPages("MAINMENU").TabIndex)
@@ -133,9 +136,10 @@ Public Class textfiletopdf
                     MsgBox("Invalid withdrawal amount.")
                 End If
             Case "DEPOSIT"
-                Dim depositAmount As Decimal
-                If Decimal.TryParse(TxtDeposit.Text, depositAmount) Then
-                    If UpdateBankBalance(Username, "deposit", depositAmount) Then
+                Dim amount As Decimal
+                If Decimal.TryParse(TxtDeposit.Text, amount) Then
+                    ' Call UpdateBankBalance for deposit
+                    If UpdateBankBalance(Username, "deposit", amount) Then
                         MsgBox("Deposit Successful")
                         TxtDeposit.Text = "0.00"
                         ATM.SelectTab(ATM.TabPages("MAINMENU").TabIndex)
@@ -144,11 +148,13 @@ Public Class textfiletopdf
                     MsgBox("Invalid deposit amount.")
                 End If
             Case "TRANSFER"
-                Dim transferAmount As Decimal
-                If Decimal.TryParse(TxtTransfer.Text, transferAmount) Then
+                Dim amount As Decimal
+                If Decimal.TryParse(TxtTransfer.Text, amount) Then
+                    ' Parse target account number from TxtAccountNumber
                     Dim targetAccountNumber As Integer
                     If Integer.TryParse(TxtAccountNumber.Text, targetAccountNumber) Then
-                        If UpdateBankBalance("transfer", transferAmount, targetAccountNumber) Then
+                        ' Call UpdateBankBalance for transfer
+                        If UpdateBankBalance("transfer", amount, targetAccountNumber) Then
                             MsgBox("Transfer Successful")
                             TxtTransfer.Text = "0.00"
                             TxtAccountNumber.Text = ""
@@ -168,7 +174,7 @@ Public Class textfiletopdf
     Private Function UpdateBankBalance(Username As String, transactionType As String, amount As Decimal, Optional targetAccountNumber As Integer = 0) As Boolean
         Try
             ' Read all lines from userData.txt
-            Dim lines() As String = File.ReadAllLines("C:\Users\eilli\Downloads\userData.txt")
+            Dim lines() As String = File.ReadAllLines("C:\Users\eilli\source\repos\TEXTFILE\userData1.txt")
 
             ' Find the line corresponding to the user's data and update the balance
             Dim updatedLines As New List(Of String)
@@ -187,7 +193,7 @@ Public Class textfiletopdf
                             currentBalance += amount
                     End Select
                     ' Update the balance in the line
-                    parts(2) = currentBalance.ToString()
+                    parts(2) = currentBalance.ToString("F2") ' Format balance to two decimal places
                     ' Reconstruct the updated line
                     Dim updatedLine As String = String.Join("|", parts)
                     updatedLines.Add(updatedLine)
@@ -205,7 +211,7 @@ Public Class textfiletopdf
             End If
 
             ' Write the updated lines back to the file
-            File.WriteAllLines("C:\Users\eilli\Downloads\userData.txt", updatedLines)
+            File.WriteAllLines("userData1.txt", updatedLines)
 
             Return True ' Update successful
         Catch ex As Exception
@@ -231,31 +237,105 @@ Public Class textfiletopdf
 
         Return activeTextBox
     End Function
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Dim oldPin As String = TextBox1.Text
-        Dim newPin As String = TextBox2.Text
-        Dim repeatNewPin As String = TextBox3.Text
-        If Not IsOldPinCorrect(oldPin) Then
-            MessageBox.Show("Incorrect old pin. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return
-        End If
-        If newPin <> repeatNewPin Then
-            MessageBox.Show("New pin and repeated pin do not match. Please re-enter.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return
-        End If
-        If ChangePinn(oldPin, newPin) Then
-            MessageBox.Show("Pin changed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        Else
-            MessageBox.Show("Error changing pin. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End If
-    End Sub
 
-    Private Function IsOldPinCorrect(oldPin As String) As Boolean
-        Return True
+    ' Event handler for the PIN change button
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        ' Get the file path of the user data file
+        Dim filePath As String = "C:\Users\eilli\source\repos\TEXTFILE\userData1.txt"
+
+        ' Read the user information from the text file
+        Dim username As String = Me.Username
+        Dim userInformation As String = ReadUserInformationFromFile(filePath)
+
+            ' Extract the old PIN from user information
+            Dim storedOldPin As String = GetOldPinFromUserInformation(userInformation)
+
+            ' Get the user input for old and new PINs
+            Dim oldPin As String = TextBox1.Text.Trim()
+            Dim newPin As String = TextBox2.Text
+            Dim repeatNewPin As String = TextBox3.Text
+
+        ' Check if the old PIN is correct and match username
+        If Not IsOldPinCorrect(oldPin, storedOldPin) OrElse Me.Username <> username Then
+            MessageBox.Show("Incorrect old PIN or username. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
+
+        ' Check if the new PINs match
+        If newPin <> repeatNewPin Then
+                MessageBox.Show("New PIN and repeated PIN do not match. Please re-enter.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+            End If
+
+        ' Change the PIN
+        If ChangeP1n(newPin, filePath, userInformation) Then
+            MessageBox.Show("PIN changed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
+        Else
+            MessageBox.Show("Error changing PIN. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End If
+        End Sub
+
+    ' Check if old PIN is correct by comparing with the stored PIN
+
+    Private Function IsOldPinCorrect(enteredPin As String, storedPin As String) As Boolean
+            Return enteredPin.Trim() = storedPin.Trim()
+        End Function
+
+    ' Change the PIN by updating the old PIN in the user information and writing to the text file
+    Private Function ChangeP1n(newPin As String, filePath As String, userInformation As String) As Boolean
+        Try
+            ' Update the old PIN with the new PIN in the user information
+            Dim updatedUserInformation As String = UpdateOldPinInUserInformation(userInformation, newPin)
+
+            ' Write the updated user information to the text file
+            File.WriteAllText(filePath, updatedUserInformation, System.Text.Encoding.UTF8)
+
+            Return True
+        Catch ex As Exception
+            MessageBox.Show("Error writing to file: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        End Try
     End Function
 
-    Private Function ChangePinn(oldPin As String, newPin As String) As Boolean
-        Return True
+    ' Read user information from a text file
+    Private Function ReadUserInformationFromFile(filePath As String) As String
+            Try
+                If File.Exists(filePath) Then
+                    Return File.ReadAllText(filePath, System.Text.Encoding.UTF8).Trim()
+                Else
+                    Return String.Empty
+                End If
+            Catch ex As Exception
+                MessageBox.Show("Error reading from file: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return String.Empty
+            End Try
+        End Function
+
+        ' Extract the old PIN from user information
+        Private Function GetOldPinFromUserInformation(userInformation As String) As String
+            ' Assuming each line in the file contains user information separated by '|'
+            Dim userInformationParts As String() = userInformation.Split("|"c)
+
+            ' The old PIN is assumed to be the second part in the user information
+            If userInformationParts.Length >= 2 Then
+                Return userInformationParts(1).Trim()
+            Else
+                Return String.Empty
+            End If
+        End Function
+
+    ' Update the old PIN in user information with the new PIN
+    Private Function UpdateOldPinInUserInformation(userInformation As String, newPin As String) As String
+        ' Assuming each line in the file contains user information separated by '|'
+        Dim userInformationParts As String() = userInformation.Split("|"c)
+
+        ' Update the old PIN with the new PIN
+        If userInformationParts.Length >= 2 Then
+            userInformationParts(1) = newPin.Trim()
+        End If
+
+        ' Join the user information parts back into a string
+        Return String.Join("|", userInformationParts)
     End Function
 
     ' Timer for detecting inactivity
@@ -318,4 +398,6 @@ Public Class textfiletopdf
             End If
         End If
     End Sub
+
+
 End Class

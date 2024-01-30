@@ -75,6 +75,8 @@ Partial Class textfiletopdf
         Me.TxtDeposit = New System.Windows.Forms.TextBox()
         Me.BALANCE = New System.Windows.Forms.TabPage()
         Me.TRANSFER = New System.Windows.Forms.TabPage()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.TxtAccountNumber = New System.Windows.Forms.TextBox()
         Me.GrpTransferKeypad = New System.Windows.Forms.GroupBox()
         Me.BtnTransfer00 = New System.Windows.Forms.Button()
         Me.BtnTransfer0 = New System.Windows.Forms.Button()
@@ -103,8 +105,6 @@ Partial Class textfiletopdf
         Me.Label4 = New System.Windows.Forms.Label()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
         Me.ACCOUNT = New System.Windows.Forms.TabPage()
-        Me.TxtAccountNumber = New System.Windows.Forms.TextBox()
-        Me.Label5 = New System.Windows.Forms.Label()
         Me.ATM.SuspendLayout()
         Me.MAINMENU.SuspendLayout()
         Me.WITHDRAW.SuspendLayout()
@@ -726,6 +726,27 @@ Partial Class textfiletopdf
         Me.TRANSFER.Text = "TRANSFER"
         Me.TRANSFER.UseVisualStyleBackColor = True
         '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Microsoft YaHei UI", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.Location = New System.Drawing.Point(51, 28)
+        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(48, 31)
+        Me.Label5.TabIndex = 30
+        Me.Label5.Text = "TO"
+        '
+        'TxtAccountNumber
+        '
+        Me.TxtAccountNumber.Font = New System.Drawing.Font("Leelawadee UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.TxtAccountNumber.Location = New System.Drawing.Point(107, 27)
+        Me.TxtAccountNumber.Margin = New System.Windows.Forms.Padding(4)
+        Me.TxtAccountNumber.Multiline = True
+        Me.TxtAccountNumber.Name = "TxtAccountNumber"
+        Me.TxtAccountNumber.Size = New System.Drawing.Size(252, 32)
+        Me.TxtAccountNumber.TabIndex = 29
+        '
         'GrpTransferKeypad
         '
         Me.GrpTransferKeypad.Controls.Add(Me.BtnTransfer00)
@@ -1041,27 +1062,6 @@ Partial Class textfiletopdf
         Me.ACCOUNT.Text = "ACCOUNT"
         Me.ACCOUNT.UseVisualStyleBackColor = True
         '
-        'TxtAccountNumber
-        '
-        Me.TxtAccountNumber.Font = New System.Drawing.Font("Leelawadee UI", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.TxtAccountNumber.Location = New System.Drawing.Point(107, 27)
-        Me.TxtAccountNumber.Margin = New System.Windows.Forms.Padding(4)
-        Me.TxtAccountNumber.Multiline = True
-        Me.TxtAccountNumber.Name = "TxtAccountNumber"
-        Me.TxtAccountNumber.Size = New System.Drawing.Size(252, 32)
-        Me.TxtAccountNumber.TabIndex = 29
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Microsoft YaHei UI", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(51, 28)
-        Me.Label5.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(48, 31)
-        Me.Label5.TabIndex = 30
-        Me.Label5.Text = "TO"
-        '
         'textfiletopdf
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
@@ -1103,13 +1103,6 @@ Partial Class textfiletopdf
     Friend WithEvents CHANGEPIN As TabPage
     Friend WithEvents ACCOUNT As TabPage
     Friend WithEvents LblLogout As Label
-    Friend WithEvents Button1 As Button
-    Friend WithEvents Label7 As Label
-    Friend WithEvents TextBox3 As TextBox
-    Friend WithEvents Label3 As Label
-    Friend WithEvents TextBox2 As TextBox
-    Friend WithEvents Label4 As Label
-    Friend WithEvents TextBox1 As TextBox
     Friend WithEvents LblWithdrawRM As Label
     Friend WithEvents TxtWithdraw As TextBox
     Friend WithEvents GrpWithdrawKeypad As GroupBox
@@ -1171,4 +1164,11 @@ Partial Class textfiletopdf
     Friend WithEvents Label2 As Label
     Friend WithEvents Label5 As Label
     Friend WithEvents TxtAccountNumber As TextBox
+    Friend WithEvents Button1 As Button
+    Friend WithEvents Label7 As Label
+    Friend WithEvents TextBox3 As TextBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents Label4 As Label
+    Friend WithEvents TextBox1 As TextBox
 End Class
