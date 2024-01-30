@@ -256,7 +256,7 @@ Public Class textfiletopdf
             Dim repeatNewPin As String = TextBox3.Text
 
         ' Check if the old PIN is correct and match username
-        If Not IsOldPinCorrect(oldPin, storedOldPin) OrElse Me.Username <> username Then
+        If Not IsOldPinCorrect(oldPin, storedOldPin) OrElse Me.Username <> GetUsernameFromUserInformation(userInformation) Then
             MessageBox.Show("Incorrect old PIN or username. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return
         End If
@@ -272,8 +272,8 @@ Public Class textfiletopdf
             MessageBox.Show("PIN changed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Else
             MessageBox.Show("Error changing PIN. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End If
-        End Sub
+        End If
+    End Sub
 
     ' Check if old PIN is correct by comparing with the stored PIN
 
@@ -284,12 +284,19 @@ Public Class textfiletopdf
     ' Change the PIN by updating the old PIN in the user information and writing to the text file
     Private Function ChangeP1n(newPin As String, filePath As String, userInformation As String) As Boolean
         Try
-            ' Update the old PIN with the new PIN in the user information
             Dim updatedUserInformation As String = UpdateOldPinInUserInformation(userInformation, newPin)
+            Dim fileLines As String() = File.ReadAllLines(filePath) ' Read all lines from the file
 
-            ' Write the updated user information to the text file
-            File.WriteAllText(filePath, updatedUserInformation, System.Text.Encoding.UTF8)
+            Dim updatedLines As New List(Of String)
+            For Each line As String In fileLines
+                If line <> userInformation Then ' Only replace the specific line with updated information
+                    updatedLines.Add(line)
+                Else
+                    updatedLines.Add(updatedUserInformation)
+                End If
+            Next
 
+            File.WriteAllLines(filePath, updatedLines.ToArray()) ' Write back all lines, including the updated one
             Return True
         Catch ex As Exception
             MessageBox.Show("Error writing to file: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -297,44 +304,66 @@ Public Class textfiletopdf
         End Try
     End Function
 
+
     ' Read user information from a text file
     Private Function ReadUserInformationFromFile(filePath As String) As String
-            Try
-                If File.Exists(filePath) Then
-                    Return File.ReadAllText(filePath, System.Text.Encoding.UTF8).Trim()
-                Else
-                    Return String.Empty
-                End If
-            Catch ex As Exception
-                MessageBox.Show("Error reading from file: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return String.Empty
-            End Try
-        End Function
+        Dim userInformation As String = String.Empty
 
-        ' Extract the old PIN from user information
-        Private Function GetOldPinFromUserInformation(userInformation As String) As String
-            ' Assuming each line in the file contains user information separated by '|'
+        Try
+            If File.Exists(filePath) Then
+                Dim fileLines As String() = File.ReadAllLines(filePath)
+
+                For Each line As String In fileLines
+                    Dim lineParts As String() = line.Split("|"c)
+
+                    If lineParts.Length >= 4 AndAlso lineParts(0).Trim() = Me.Username Then
+                        userInformation = line
+                        Exit For
+                    End If
+                Next
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error reading from file: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
+        Return userInformation
+    End Function
+
+    ' Extract the old PIN from user information
+    Private Function GetOldPinFromUserInformation(userInformation As String) As String
+        Dim oldPin As String = String.Empty
+        If Not String.IsNullOrEmpty(userInformation) Then
             Dim userInformationParts As String() = userInformation.Split("|"c)
 
-            ' The old PIN is assumed to be the second part in the user information
             If userInformationParts.Length >= 2 Then
-                Return userInformationParts(1).Trim()
-            Else
-                Return String.Empty
+                oldPin = userInformationParts(1).Trim()
             End If
-        End Function
+        End If
+        Return oldPin
+    End Function
+
+    Private Function GetUsernameFromUserInformation(userInformation As String) As String
+        Dim username As String = String.Empty
+
+        If Not String.IsNullOrEmpty(userInformation) Then
+            Dim userInformationParts As String() = userInformation.Split("|"c)
+
+            If userInformationParts.Length >= 1 Then
+                username = userInformationParts(0).Trim()
+            End If
+        End If
+
+        Return username
+    End Function
 
     ' Update the old PIN in user information with the new PIN
     Private Function UpdateOldPinInUserInformation(userInformation As String, newPin As String) As String
-        ' Assuming each line in the file contains user information separated by '|'
         Dim userInformationParts As String() = userInformation.Split("|"c)
 
-        ' Update the old PIN with the new PIN
         If userInformationParts.Length >= 2 Then
             userInformationParts(1) = newPin.Trim()
         End If
 
-        ' Join the user information parts back into a string
         Return String.Join("|", userInformationParts)
     End Function
 
