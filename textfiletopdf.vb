@@ -15,6 +15,14 @@ Public Class textfiletopdf
         ATM.SelectTab(ATM.TabPages("BALANCE").TabIndex)
     End Sub
 
+    Private Sub BtnChangePIN_Click(sender As Object, e As EventArgs) Handles BtnChangePIN.Click
+        ATM.SelectTab(ATM.TabPages("CHANGEPIN").TabIndex)
+    End Sub
+
+    Private Sub BtnAccount_Click(sender As Object, e As EventArgs) Handles BtnAccount.Click
+        ATM.SelectTab(ATM.TabPages("ACCOUNT").TabIndex)
+    End Sub
+
     Private Sub BtnTransfer_Click(sender As Object, e As EventArgs) Handles BtnTransfer.Click
         ATM.SelectTab(ATM.TabPages("TRANSFER").TabIndex)
         Dim accountNumber As String = String.Empty
@@ -53,11 +61,12 @@ Public Class textfiletopdf
         ' Iterate through each line in the file to check if the account number exists
         For Each line As String In userDataLines
             Dim parts() As String = line.Split("|"c)
-            If parts.Length >= 4 AndAlso parts(3) = accountNumber Then
-                ' Account number found, return true
-                Return True
+            ' Check the last part (after three |) for the account number
+            If parts.Length >= 4 AndAlso parts(parts.Length - 1) = accountNumber Then
+                Return True ' Account number found
             End If
         Next
+
 
         ' Account number not found, return false
         Return False
@@ -127,7 +136,7 @@ Public Class textfiletopdf
                 Dim amount As Decimal
                 If Decimal.TryParse(TxtWithdraw.Text, amount) Then
                     ' Call UpdateBankBalance for withdrawal
-                    If UpdateBankBalance(Username, "withdraw", amount) Then
+                    If UpdateBankBalance(Username, "Withdraw", amount) Then
                         MsgBox("Withdrawal Successful")
                         TxtWithdraw.Text = "0.00"
                         ATM.SelectTab(ATM.TabPages("MAINMENU").TabIndex)
@@ -139,7 +148,7 @@ Public Class textfiletopdf
                 Dim amount As Decimal
                 If Decimal.TryParse(TxtDeposit.Text, amount) Then
                     ' Call UpdateBankBalance for deposit
-                    If UpdateBankBalance(Username, "deposit", amount) Then
+                    If UpdateBankBalance(Username, "Deposit", amount) Then
                         MsgBox("Deposit Successful")
                         TxtDeposit.Text = "0.00"
                         ATM.SelectTab(ATM.TabPages("MAINMENU").TabIndex)
@@ -154,7 +163,7 @@ Public Class textfiletopdf
                     Dim targetAccountNumber As Integer
                     If Integer.TryParse(TxtAccountNumber.Text, targetAccountNumber) Then
                         ' Call UpdateBankBalance for transfer
-                        If UpdateBankBalance("transfer", amount, targetAccountNumber) Then
+                        If UpdateBankBalance("Transfer", amount, targetAccountNumber) Then
                             MsgBox("Transfer Successful")
                             TxtTransfer.Text = "0.00"
                             TxtAccountNumber.Text = ""
@@ -171,9 +180,10 @@ Public Class textfiletopdf
         End Select
     End Sub
 
-    Private Function UpdateBankBalance(Username As String, transactionType As String, amount As Decimal, Optional targetAccountNumber As Integer = 0) As Boolean
+    Private Function UpdateBankBalance(transactionType As String, amount As Decimal, Optional targetAccountNumber As Integer = 0) As Boolean
         Try
-            ' Read all lines from userData.txt
+
+            Dim username As String = Label2.Text.Trim()
             Dim lines() As String = File.ReadAllLines("C:\Users\eilli\source\repos\TEXTFILE\userData1.txt")
 
             ' Find the line corresponding to the user's data and update the balance
@@ -181,8 +191,8 @@ Public Class textfiletopdf
             Dim userFound As Boolean = False
             For Each line As String In lines
                 Dim parts() As String = line.Split("|"c)
-                If parts.Length >= 4 AndAlso parts(0) = Username Then
-                    ' User found, update their balance based on transaction type
+                If parts.Length >= 4 AndAlso parts(0) = username Then ' Use username from Label2
+                    ' User found, update the balance at the third position (index 2)
                     Dim currentBalance As Decimal = Decimal.Parse(parts(2))
                     Select Case transactionType
                         Case "Withdraw", "Transfer"
@@ -192,8 +202,10 @@ Public Class textfiletopdf
                             ' Add amount for deposit
                             currentBalance += amount
                     End Select
+
                     ' Update the balance in the line
                     parts(2) = currentBalance.ToString("F2") ' Format balance to two decimal places
+
                     ' Reconstruct the updated line
                     Dim updatedLine As String = String.Join("|", parts)
                     updatedLines.Add(updatedLine)
@@ -205,13 +217,13 @@ Public Class textfiletopdf
             Next
 
             If Not userFound Then
-                ' User not found in userData.txt
+                ' User not found in userData1.txt
                 MessageBox.Show("User not found.")
                 Return False
             End If
 
             ' Write the updated lines back to the file
-            File.WriteAllLines("userData1.txt", updatedLines)
+            File.WriteAllLines("C:\Users\eilli\source\repos\TEXTFILE\userData1.txt", updatedLines)
 
             Return True ' Update successful
         Catch ex As Exception
@@ -239,7 +251,7 @@ Public Class textfiletopdf
     End Function
 
     ' Event handler for the PIN change button
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+    Private Sub Button1_Click(sender As Object, e As EventArgs)
         ' Get the file path of the user data file
         Dim filePath As String = "C:\Users\eilli\source\repos\TEXTFILE\userData1.txt"
 
@@ -247,13 +259,13 @@ Public Class textfiletopdf
         Dim username As String = Me.Username
         Dim userInformation As String = ReadUserInformationFromFile(filePath)
 
-            ' Extract the old PIN from user information
-            Dim storedOldPin As String = GetOldPinFromUserInformation(userInformation)
+        ' Extract the old PIN from user information
+        Dim storedOldPin As String = GetOldPinFromUserInformation(userInformation)
 
-            ' Get the user input for old and new PINs
-            Dim oldPin As String = TextBox1.Text.Trim()
-            Dim newPin As String = TextBox2.Text
-            Dim repeatNewPin As String = TextBox3.Text
+        ' Get the user input for old and new PINs
+        Dim oldPin As String = TextBox1.Text.Trim()
+        Dim newPin As String = TextBox2.Text
+        Dim repeatNewPin As String = TextBox3.Text
 
         ' Check if the old PIN is correct and match username
         If Not IsOldPinCorrect(oldPin, storedOldPin) OrElse Me.Username <> GetUsernameFromUserInformation(userInformation) Then
@@ -263,9 +275,9 @@ Public Class textfiletopdf
 
         ' Check if the new PINs match
         If newPin <> repeatNewPin Then
-                MessageBox.Show("New PIN and repeated PIN do not match. Please re-enter.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return
-            End If
+            MessageBox.Show("New PIN and repeated PIN do not match. Please re-enter.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return
+        End If
 
         ' Change the PIN
         If ChangeP1n(newPin, filePath, userInformation) Then
@@ -278,8 +290,8 @@ Public Class textfiletopdf
     ' Check if old PIN is correct by comparing with the stored PIN
 
     Private Function IsOldPinCorrect(enteredPin As String, storedPin As String) As Boolean
-            Return enteredPin.Trim() = storedPin.Trim()
-        End Function
+        Return enteredPin.Trim() = storedPin.Trim()
+    End Function
 
     ' Change the PIN by updating the old PIN in the user information and writing to the text file
     Private Function ChangeP1n(newPin As String, filePath As String, userInformation As String) As Boolean
@@ -303,7 +315,6 @@ Public Class textfiletopdf
             Return False
         End Try
     End Function
-
 
     ' Read user information from a text file
     Private Function ReadUserInformationFromFile(filePath As String) As String
@@ -370,7 +381,7 @@ Public Class textfiletopdf
     ' Timer for detecting inactivity
     Private WithEvents inactivityTimer As New Timer With {.Interval = 120000} ' 2 minutes in milliseconds
 
-    Private Sub AnyButton_Click(sender As Object, e As EventArgs) Handles BtnWithdraw1.Click, BtnWithdraw2.Click, BtnWithdraw3.Click, BtnWithdraw4.Click, BtnWithdraw5.Click, BtnWithdraw6.Click, BtnWithdraw7.Click, BtnWithdraw8.Click, BtnWithdraw9.Click, BtnWithdraw0.Click, BtnWithdraw00.Click, BtnWithdrawDecimal.Click
+    Private Sub AnyButton_Click(sender As Object, e As EventArgs) Handles BtnWithdraw1.Click, BtnWithdraw2.Click, BtnWithdraw3.Click, BtnWithdraw4.Click, BtnWithdraw5.Click, BtnWithdraw6.Click, BtnWithdraw7.Click, BtnWithdraw8.Click, BtnWithdraw9.Click, BtnWithdraw0.Click
         inactivityTimer.Stop()
         inactivityTimer.Start()
     End Sub
@@ -390,43 +401,117 @@ Public Class textfiletopdf
         inactivityTimer.Stop()
     End Sub
 
-    Private Sub BtnChangePIN_Click(sender As Object, e As EventArgs) Handles BtnChangePIN.Click
-        ATM.SelectTab(ATM.TabPages("CHANGEPIN").TabIndex)
+    Private Sub Btnshowbln_Click(sender As Object, e As EventArgs) Handles Btnshowbln.Click
+        ' Check if the file exists
+        Dim filePath As String = "C:\Users\eilli\source\repos\TEXTFILE\userData1.txt" ' Update with your file path
+        Dim accountName As String = Me.Username
+
+        Try
+            ' Read all lines from the file
+            Dim lines() As String = File.ReadAllLines(filePath)
+
+            ' Search for the account name
+            For Each line As String In lines
+                Dim parts() As String = line.Split("|"c)
+
+                ' Check if the current line contains the specified account name
+                If parts.Length >= 4 AndAlso parts(0).Trim() = accountName Then
+                    ' Get the balance from the THIRD position (index 2)
+                    Dim balance As String = parts(2).Trim()
+                    Label6.Text = balance
+                    Return
+                End If
+            Next
+
+            ' If the account is not found, display a message
+            MessageBox.Show("Account not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+
+        Catch ex As Exception
+            MessageBox.Show($"An error occurred: {ex.Message}")
+        End Try
     End Sub
 
-    Private Sub BtnAccount_Click(sender As Object, e As EventArgs) Handles BtnAccount.Click
-        ATM.SelectTab(ATM.TabPages("ACCOUNT").TabIndex)
+    Private Sub BtnAccDelete_Click(sender As Object, e As EventArgs) Handles BtnAccDelete.Click
+        Dim enteredPin As String = InputBox("Enter your PIN:", "PIN Verification")
+        Dim username As String = Me.Username
+        Dim userInformation As String = ReadUserInformationFromFile("C:\Users\eilli\source\repos\TEXTFILE\userData1.txt", username)
+        Dim storedPin As String = GetPinFromUserInformation(userInformation)
+
+        ' Check if the entered PIN matches the stored PIN
+        If enteredPin = storedPin Then
+
+            DeleteAccount(username)
+
+            Me.Close()
+            Form1.Show()
+        Else
+            MessageBox.Show("Incorrect PIN. Account deletion failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End If
+    End Sub
+
+    ' Read user information from a text file
+    Private Function ReadUserInformationFromFile(filePath As String, username As String) As String
+        Try
+            If File.Exists(filePath) Then
+                Dim lines() As String = File.ReadAllLines(filePath)
+                For Each line As String In lines
+                    Dim parts() As String = line.Split("|"c)
+                    If parts.Length >= 4 AndAlso parts(0) = username Then
+                        Return line.Trim()
+                    End If
+                Next
+            End If
+            Return String.Empty
+        Catch ex As Exception
+            MessageBox.Show("Error reading from file: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return String.Empty
+        End Try
+    End Function
+
+    ' Extract the PIN from user information
+    Private Function GetPinFromUserInformation(userInformation As String) As String
+
+        ' Assuming each line in the file contains user information separated by '|'
+        Dim userInformationParts As String() = userInformation.Split("|"c)
+
+        ' The PIN is assumed to be the second part in the user information
+        If userInformationParts.Length >= 2 Then
+            Return userInformationParts(1).Trim()
+        Else
+            Return String.Empty
+        End If
+    End Function
+
+    ' Delete user account from the userData1 text file
+    Private Sub DeleteAccount(username As String)
+        Try
+            Dim filePath As String = "C:\Users\eilli\source\repos\TEXTFILE\userData1.txt"
+            Dim tempFile As String = Path.GetTempFileName()
+
+            Using reader As New StreamReader(filePath)
+                Using writer As New StreamWriter(tempFile)
+                    Dim line As String
+                    While Not reader.EndOfStream
+                        line = reader.ReadLine()
+                        Dim parts() As String = line.Split("|"c)
+                        If parts.Length >= 4 AndAlso parts(0) <> username Then
+                            writer.WriteLine(line)
+                        End If
+                    End While
+                End Using
+            End Using
+
+            File.Delete(filePath)
+            File.Move(tempFile, filePath)
+        Catch ex As Exception
+            MessageBox.Show("Error deleting account: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub LblLogout_Click(sender As Object, e As EventArgs) Handles LblLogout.Click
-        Dim summaryMessage As String = "Transaction Summary:"
-        Dim withdrawAmount As Decimal = 0
-        Dim depositAmount As Decimal = 0
-        If withdrawAmount > 0 Then
-            summaryMessage &= vbCrLf & "Withdrawal: " & withdrawAmount.ToString("C2")
-        End If
-        If depositAmount > 0 Then
-            summaryMessage &= vbCrLf & "Deposit: " & depositAmount.ToString("C2")
-        End If
-        Dim result As DialogResult = MessageBox.Show(summaryMessage, "Logout Summary", MessageBoxButtons.OKCancel, MessageBoxIcon.Information)
-
-        If result = Windows.Forms.DialogResult.OK Then
-            Dim saveFileDialog As New SaveFileDialog()
-            saveFileDialog.Filter = "Text Files (*.txt)|*.txt"
-            saveFileDialog.Title = "Save Transaction Summary"
-
-            If saveFileDialog.ShowDialog() = Windows.Forms.DialogResult.OK Then
-                Try
-                    Using writer As New System.IO.StreamWriter(saveFileDialog.FileName)
-                        writer.Write(summaryMessage)
-                    End Using
-                    MessageBox.Show("Transaction summary saved to text file.", "File Saved", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Catch ex As Exception
-                    MessageBox.Show("An error occurred: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                End Try
-            End If
-        End If
+        ' Close the current form and show Form1
+        Form1.Show()
+        Me.Close() ' Close the current form
     End Sub
-
 
 End Class
